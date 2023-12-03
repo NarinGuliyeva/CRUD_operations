@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    />
+    <link href="
+    https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.css
+    " rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+ <link rel="stylesheet" href="./css/reset.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- TOAST -->
+    <script src="
+    https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.js
+    "></script>
+    <script
+    src="https://kit.fontawesome.com/fdb9fe0c7b.js"
+    crossorigin="anonymous"
+  ></script>
+
+  </head>
+  <body>
+
+
+    <div class="all-divs">
+      <div class="top">
+        <h3><i class="fa-brands fa-drupal"></i> <a href="#">Admin Panel</a></h3>
+        <div class="icons">
+          <a href="#"><i class="fa-solid fa-envelopes-bulk"></i></a>
+          <a href="#"><i class="fa-solid fa-right-to-bracket"></i></a>
+        </div>
+      </div>
+      <div class="left-and-right">
+        <div class="left-in-left">
+          <div class="left">
+            <ul>
+              <li>
+                  <a href="./adminPanel.html"><i class="fa-solid fa-house"></i> Ana səhifə</a>
+                </li>
+                <li>
+                  <a href="./category.html"><i class="fa-solid fa-list"></i> Xəbər kateqoriyaları</a>
+                </li>
+              <li>
+                <a href="./author.html"><i class="fa-solid fa-newspaper"></i> Müəlliflər</a>
+              </li>
+              <li>
+                <a href="./news.html"><i class="fa-solid fa-people-group"></i> Xəbərlər</a>
+              </li>
+            </ul>
+          </div>
+          <div class="empty-icon">
+              <i class="fa-solid fa-chevron-up"></i>
+          </div>
+        </div>
+        <div class="container hg">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Sıra</th>
+                <th>Ad</th>
+                <th>Soyad</th>
+                <th>Təvəllüd</th>
+                <th>Elmi dərəcə</th>
+                <th>
+                  <button class="btn btn-success">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+         
+        </div>
+      </div>
+  </div>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="author-modal" data-backdrop="static">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Müəllif əlavə et:</h4>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Müəllifin adı:</label>
+              <input type="text" name="author_name" class="form-control" />
+              <label>Müəllifin soyadı:</label>
+              <input type="text" name="author_surname" class="form-control" />
+              <label>Müəllifin təvəllüdü:</label>
+              <input type="date" name="author_birthday" class="form-control" />
+              <label>Müəllifin elmi dərəcəsi:</label>
+              <input type="text" name="author_degree" class="form-control" />
+            </div>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success">Yadda saxla</button>
+            <button type="button" class="btn btn-danger">Bagla</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    // START
+      $(document).ready(function () {
+        Order();
+      });
+
+
+ 
+  // GET AUTHORS
+      function Order() {
+        $("tbody").html("");
+        // elemenetleri silib yeniden append etmek ucun
+        $.ajax({
+          url: "https://api.tech-it.az/api/get-authors",
+          headers: {
+            Accept: "application/json",
+          },
+          type: "POST",
+          data: { candidate_id: 22 },
+          success: function (response) {
+            console.log(response);
+            response.authors.forEach(function (item, index) {
+              $("tbody").append(`
+							<tr data-id="${item.id}">
+								<td>${index + 1}</td>
+								<td>${item.name}</td>
+								<td>${item.surname}</td>
+								<td>${item.birthday}</td>
+								<td>${item.degree}</td>
+								<td>
+									<button class="btn btn-primary"><i class="fa fa-pencil"></i></button>
+									<button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+								</td>
+							</tr>
+							`);
+            });
+          },
+          error: function (response) {
+            console.log(response);
+          },
+        });
+      }
+
+      //MODAL CLOSE
+      $("#author-modal  .modal-footer").on("click", ".btn-danger", function () {
+        $("#author-modal").modal("hide");
+      });
+
+   // ADD
+      $("thead").on("click", ".btn-success", function () {
+        $("#author-modal .modal-body input").val("");
+        $("#author-modal").attr("author-id", 0);
+        $("#author-modal").modal("show");
+      });
+
+      // ADD-EDIT
+      $("#author-modal .modal-footer").on("click", ".btn-success", function () {
+        var name = $( '#author-modal .modal-body input[name="author_name"]' ).val();
+        var surname = $( '#author-modal .modal-body input[name="author_surname"]' ).val();
+        var birthday = $( '#author-modal .modal-body input[name="author_birthday"]' ).val();
+        var degree = $( '#author-modal .modal-body input[name="author_degree"]' ).val();
+        var id = $("#author-modal").attr("author-id");
+        console.log(id);
+        $.ajax({
+          url: "https://api.tech-it.az/api/add-edit-author",
+          headers: {
+            Accept: "application/json",
+          },
+          type: "POST",
+          data: {
+            name,
+            surname,
+            birthday,
+            degree,
+            candidate_id: 22,
+            id: id,
+          },
+          success: function (response) {
+            Order();
+            $("#author-modal").modal("hide");
+            $.toast({
+    heading: 'Success',
+    text: response.statusText,
+    showHideTransition: 'slide',
+    icon: 'success'
+})
+            console.log(response);
+          },
+          error: function (response) {
+            $.toast({
+    heading: 'Error',
+    text: response.statusText,
+    showHideTransition: 'fade',
+    icon: 'error'
+})
+            console.log(response);
+          },
+        });
+      });
+
+      // INFO
+      $("tbody").on("click", ".btn-primary", function () {
+        var tr = $(this).parents("tr");
+        var id = tr.attr("data-id");
+        var name = tr.find("td:eq(1)").text();
+        var surname = tr.find("td:eq(2)").text();
+        var birthday = tr.find("td:eq(3)").text();
+        var degree = tr.find("td:eq(4)").text();
+        console.log(id);
+        $.ajax({
+          url: "https://api.tech-it.az/api/info-author",
+          headers: {
+            Accept: "application/json",
+          },
+          type: "POST",
+          data: { name,surname,birthday,degree,id,candidate_id: 22 },
+          success: function (response) {
+            $("#author-modal .modal-header .modal-title").text("Müəlliflərdə düzəliş edin:")
+            $('#author-modal .modal-body input[name="author_name"]').val(  name );
+            $('#author-modal .modal-body input[name="author_surname"]').val(  surname );
+            $('#author-modal .modal-body input[name="author_birthday"]').val(  birthday );
+            $('#author-modal .modal-body input[name="author_degree"]').val(  degree );
+            $("#author-modal").attr("author-id", id);
+            $("#author-modal").modal("show");
+            console.log(response);
+          },
+          error: function (response) {
+            $.toast({
+    heading: 'Error',
+    text: response.statusText,
+    showHideTransition: 'fade',
+    icon: 'error'
+})
+            console.log(response);
+          },
+        });
+      });
+
+      //  DELETE
+      function sirala() {
+        var i = 0;
+        $("tbody tr").each(function () {
+          $(this).find("td:eq(0)").text(++i);
+        });
+      }
+
+      $("tbody").on("click", ".btn-danger", function () {
+        var tr = $(this).parents("tr");
+        var id = tr.attr("data-id");
+        $.ajax({
+          url: "https://api.tech-it.az/api/delete-author",
+          headers: {
+            Accept: "application/json",
+          },
+          type: "POST",
+          data: { id, candidate_id: 22 },
+          success: function (response) {
+            tr.remove();
+            // Order();
+            $("#author-modal").modal("hide");
+            $.toast({
+    heading: 'Success',
+    text: response.statusText,
+    showHideTransition: 'slide',
+    icon: 'success'
+})
+            console.log(response);
+          },
+          error: function (response) {
+            $.toast({
+    heading: 'Error',
+    text: response.statusText,
+    showHideTransition: 'fade',
+    icon: 'error'
+})
+            console.log(response);
+          },
+        });
+      });
+
+    </script>
+  </body>
+</html>

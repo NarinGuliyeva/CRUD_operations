@@ -1,0 +1,89 @@
+body,
+* {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.top {
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(48, 60, 84, 255);
+}
+.top h3 {
+  font-size: 25px;
+}
+.top h3 a, .top h3 i {
+    color: rgb(214, 214, 214);
+}
+.top .icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 50px;
+}
+.top a i {
+  color: rgb(214, 214, 214);
+}
+/*  */
+
+.left-and-right {
+  display: flex;
+}
+.left-and-right .left-in-left {
+  background-color: #3c4b64;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 20%;
+}
+.left-and-right .hg{
+  height: 100vh;
+  overflow-y: scroll;
+}
+.left-and-right .left-in-left .left {
+  color: rgb(214, 214, 214);
+  display: flex;
+  flex-direction: column;
+}
+.left-and-right .left-in-left .left p {
+  font-size: 20px;
+  padding: 20px 30px;
+}
+.left-and-right .left-in-left .left ul li {
+    transition: .2s;
+}
+.left-and-right .left-in-left .left ul li:hover {
+    background-color: rgba(48, 60, 84, 255);
+}
+.left-and-right .left-in-left .left ul li a {
+  color: rgb(214, 214, 214);
+  display: inline-block;
+  padding: 20px 30px;
+  width: 100%;
+  text-decoration: none;
+}
+.left-and-right .left-in-left .left ul li a i {
+  margin-right: 5px;
+}
+.left-and-right .left-in-left .empty-icon {
+  padding: 20px;
+  background-color: rgba(48, 60, 84, 255);
+  color: rgb(214, 214, 214);
+}
+/*  */
+
+.left-and-right .right {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  width: 80%;
+  align-items: center;
+  background-color: rgb(204, 204, 204);
+}
+table tbody tr td,  table thead tr th {
+  text-align: center;
+ }
+table tbody td:nth-child(2) {
+width: 250px;
+}

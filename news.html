@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      href="
+https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.css
+"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- SUMMERNOTE -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <!-- TOAST -->
+    <script src="
+https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.js
+"></script>
+<script
+src="https://kit.fontawesome.com/fdb9fe0c7b.js"
+crossorigin="anonymous"
+></script>
+  </head>
+  <body>
+
+
+    <div class="all-divs">
+      <div class="top">
+        <h3><i class="fa-brands fa-drupal"></i> <a href="#">Admin Panel</a></h3>
+        <div class="icons">
+          <a href="#"><i class="fa-solid fa-envelopes-bulk"></i></a>
+          <a href="#"><i class="fa-solid fa-right-to-bracket"></i></a>
+        </div>
+      </div>
+      <div class="left-and-right">
+        <div class="left-in-left">
+          <div class="left">
+            <ul>
+              <li>
+                  <a href="./adminPanel.html"><i class="fa-solid fa-house"></i> Ana səhifə</a>
+                </li>
+                <li>
+                  <a href="./category.html"><i class="fa-solid fa-list"></i> Xəbər kateqoriyaları</a>
+                </li>
+              <li>
+                <a href="./author.html"><i class="fa-solid fa-newspaper"></i> Müəlliflər</a>
+              </li>
+              <li>
+                <a href="./news.html"><i class="fa-solid fa-people-group"></i> Xəbərlər</a>
+              </li>
+            </ul>
+          </div>
+          <div class="empty-icon">
+              <i class="fa-solid fa-chevron-up"></i>
+          </div>
+        </div>
+        <div class="container hg">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Sıra</th>
+                <th>Başlıq</th>
+                <th>Tarix</th>
+                <th>Müəllif</th>
+                <th>Kateqoriya</th>
+                <th>Örtük şəkli</th>
+                <th>
+                  <button class="btn btn-success">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+  </div>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="news-modal" data-backdrop="static">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Xəbər əlavə et:</h4>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+
+          <!-- Modal body -->
+
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Başlıq:</label>
+              <input type="text" name="news_title" class="form-control" />
+              <label>Məzmun:</label>
+              <div id="summernote"></div>
+              <label>Tarix:</label>
+              <input type="date" name="news_date" class="form-control" />
+
+              <div class="authors">
+                <label>Müəllif:</label>
+                <select name="author" id="authors">
+                  <option selected hidden value="author">Müəlliflər</option>
+                </select>
+              </div>
+
+              <div class="categories">
+                <label>Kateqoriya:</label>
+                <select name="category" id="categories">
+                  <option selected hidden value="cat">Kateqoriyalar</option>
+                </select>
+              </div>
+              <label>Örtük şəkli:</label>
+              <input type="file" name="news_cover" class="form-control" />
+            </div>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success">Yadda saxla</button>
+            <button type="button" class="btn btn-danger">Bagla</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // START
+      $(document).ready(function () {
+        $("#summernote").summernote({
+          placeholder: "Xəbərin məzmununu daxil edin...",
+          tabsize: 2,
+          height: 100,
+        });
+        Order();
+      });
+
+      // GET CATEGORIES
+      function Order() {
+        $("tbody").html("");
+
+        // elemenetleri silib yeniden append etmek ucun
+        $.ajax({
+          url: "https://api.tech-it.az/api/get-all-news",
+          headers: {
+            Accept: "application/json",
+          },
+          type: "POST",
+          data: { candidate_id: 22 },
+          success: function (response) {
+            console.log(response);
+            response.allNews.forEach(function (item, index) {
+              console.log(item);
+              $("tbody").append(`
+							<tr data-id="${item.id}">
+								<td>${index + 1}</td>
+								<td>${item.title}</td>
+								<td>${item.date}</td>
+								<td>${item.author_name}</td>
+								<td>${item.category_name}</td>
+								<td><img  style="width:100px ; height:100px ; object-fit:cover"  src="${
+                  item.cover
+                }" /></td>
+								<td>
+									<button class="btn btn-primary"><i class="fa fa-pencil"></i></button>
+									<button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+								</td>
+							</tr>
+							`);
+            });
+          },
+          error: function (response) {
+            console.log(response);
+          },
+        });
+      }
+
+      // MODAL CLOSE
+      $("#news-modal  .modal-footer").on("click", ".btn-danger", function () {
+        $("#news-modal").modal("hide");
+      });
+
+      // ADD
+      $("thead").on("click", ".btn-success", function () {
+        $("#authors").val("author");
+        $("#categories").val("cat");
+        $(".note-editor .note-editable").text("");
+        $(".note-editor .note-placeholder").css({
+          display: "block",
+        });
+        $(".note-editor .note-placeholder").text(
+          "Xəbərin məzmununu daxil edin..."
+        );
+        $("#news-modal .modal-body input").val("");
+        $("#news-modal").attr("news-id", 0);
+        $("#news-modal").modal("show");
+      });
+
+      // AUTHOR'S SELECTION
+      function authors() {
+        $.ajax({
+          url: "https://api.tech-it.az/api/get-authors",
+          headers: {
+            Accept: "application/json",
+          },
+          type: "POST",
+          data: { candidate_id: 22 },
+          success: function (response) {
+            console.log(response);
+            response.authors.forEach(function (item, index) {
+              $("#authors").append(`
+							<option author_id="${item.id}"  value="${item.name} ${item.surname}">${item.name} ${item.surname}</option>
+							`);
+            });
+          },
+          error: function (response) {
+            console.log(response);
+          },
+        });
+      }
+
+      authors();
+
+      // CATEGORIES SELECTION
+      function categories() {
+        $.ajax({
+          url: "https://api.tech-it.az/api/get-categories",
+          headers: {
+            Accept: "application/json",
+          },
+          type: "POST",
+          data: { candidate_id: 22 },
+          success: function (response) {
+            console.log(response);
+            response.categories.forEach(function (item, index) {
+              $("#categories").append(`
+							<option  category_id="${item.id} " value="${item.name}">${item.name}</option>			
+							`);
+            });
+          },
+          error: function (response) {
+            console.log(response);
+          },
+        });
+      }
+      categories();
+
+      var author_id;
+      var category_id;
+      $("#authors").on("change", function () {
+        author_id = $(" #authors option:selected").attr("author_id");
+      });
+      $("#categories").on("change", function () {
+        category_id = $(" #categories option:selected").attr("category_id");
+      });
+
+      // ADD-EDIT
+      $("#news-modal .modal-footer").on("click", ".btn-success", function () {
+        var id = $("#news-modal").attr("news-id");
+        var title = $('#news-modal .modal-body input[name="news_title"]').val();
+        var description = $(".note-editor .note-editable").text();
+        var date = $('#news-modal .modal-body input[name="news_date"]').val();
+        image = $('input[name="news_cover"]')[0].files[0];
+        var formdata = new FormData();
+        formdata.append("cover", image);
+        formdata.append("title", title);
+        formdata.append("description", description);
+        formdata.append("date", date);
+        formdata.append("category_id", category_id);
+        formdata.append("author_id", author_id);
+        formdata.append("candidate_id", 22);
+        formdata.append("id", id);
+        var id = $("#news-modal").attr("news-id");
+        $.ajax({
+          url: "https://api.tech-it.az/api/add-edit-news",
+          headers: {
+            Accept: "application/json",
+          },
+          type: "POST",
+          data: formdata,
+          processData: false,
+          contentType: false,
+          cache: false,
+          success: function (response) {
+            Order();
+            $("#news-modal").modal("hide");
+            $.toast({
+              heading: "Success",
+              text: response.statusText,
+              showHideTransition: "slide",
+              icon: "success",
+            });
+            console.log(response);
+          },
+          error: function (response) {
+            console.log(response);
+            $.toast({
+              heading: "Error",
+              text: response.statusText,
+              showHideTransition: "fade",
+              icon: "error",
+            });
+          },
+        });
+      });
+
+      // GET
+      $("tbody").on("click", ".btn-primary", function () {
+        var tr = $(this).parents("tr");
+        var id = tr.attr("data-id");
+        var title = tr.find("td:eq(1)").text();
+        var description = tr.find("td:eq(2)").text();
+        var date = tr.find("td:eq(3)").text();
+        var author_name = tr.find("td:eq(4)").text();
+        var category_name = tr.find("td:eq(5)").text();
+        console.log(author_name);
+
+        $.ajax({
+          url: "https://api.tech-it.az/api/info-news",
+          headers: {
+            Accept: "application/json",
+          },
+          type: "POST",
+          data: { id: id, candidate_id: 22 },
+          success: function (response) {
+            $("#news-modal .modal-header .modal-title").text(
+              "Xəbərlərdə düzəliş edin:"
+            );
+            $('#news-modal .modal-body input[name="news_title"]').val(title);
+            $(".note-editor .note-editable").text("");
+            $(".note-editor .note-editable").text(description);
+            $(".note-editor .note-placeholder").text("");
+            $('#news-modal .modal-body input[name="news_date"]').val(date);
+            $("#authors").val(author_name);
+            $("#categories").val(category_name);
+            $('input[name="news_cover"]').val("");
+            $("#news-modal").attr("news-id", id);
+            $("#news-modal").modal("show");
+            console.log(response);
+          },
+          error: function (response) {
+            console.log(response);
+          },
+        });
+      });
+
+      //   DELETE
+      function sirala() {
+        var i = 0;
+        $("tbody tr").each(function () {
+          $(this).find("td:eq(0)").text(++i);
+        });
+      }
+
+      $("tbody").on("click", ".btn-danger", function () {
+        var tr = $(this).parents("tr");
+        var id = tr.attr("data-id");
+        $.ajax({
+          url: "https://api.tech-it.az/api/delete-news",
+          headers: {
+            Accept: "application/json",
+          },
+          type: "POST",
+          data: { id, candidate_id: 22 },
+          success: function (response) {
+            tr.remove();
+            // Order();
+            $("#news-modal").modal("hide");
+            $.toast({
+              heading: "Success",
+              text: response.statusText,
+              showHideTransition: "slide",
+              icon: "success",
+            });
+            console.log(response);
+          },
+          error: function (response) {
+            console.log(response);
+            $.toast({
+              heading: "Error",
+              text: response.statusText,
+              showHideTransition: "fade",
+              icon: "error",
+            });
+          },
+        });
+      });
+    </script>
+  </body>
+</html>
